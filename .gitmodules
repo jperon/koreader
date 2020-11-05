@@ -21,3 +21,6 @@
 [submodule "metadata"]
 	path = metadata
 	url = https://github.com/koreader/koreader-metadata
+[submodule "plugins/clock.koplugin"]
+	path = plugins/clock.koplugin
+	url = https://github.com/jperon/clock.koplugin
