@@ -104,6 +104,11 @@ function ReaderZooming:init()
                 doc = "manual zoom mode",
                 event = "SetZoomMode", args = "manual"
             },
+            ZoomToFitLines = {
+                { "Shift", "H" },
+                doc = "zoom for horizontal panning",
+                event = "SetZoomMode", args = "lne"
+            },
         }
     end
 end
