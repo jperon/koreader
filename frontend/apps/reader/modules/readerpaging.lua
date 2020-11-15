@@ -479,6 +479,13 @@ function ReaderPaging:onZoomModeUpdate(new_mode)
     self.zoom_mode = new_mode
 end
 
+function ReaderPaging:onZoomPanUpdate(new_pan)
+    -- we need to remember zoom pan overlap to handle page turn event
+    for k, v in pairs(new_pan) do
+        self[k] = v
+    end
+end
+
 function ReaderPaging:onPageUpdate(new_page_no, orig_mode)
     self.current_page = new_page_no
     if self.view.page_scroll and orig_mode ~= "scrolling" then

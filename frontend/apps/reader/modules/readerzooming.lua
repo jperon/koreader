@@ -54,6 +54,10 @@ local ReaderZooming = InputContainer:new{
         contentheight = _("Zoom to fit content height works best with page view."),
         content = _("Zoom to fit content works best with page view."),
     },
+    panned_modes = {
+        column = _("In most cases, with column zoom mode, you'll want to set page view."),
+        hpanning = _("Zoom for horizontal panning only works in page view."),
+    }
 }
 
 function ReaderZooming:init()
@@ -107,7 +111,7 @@ function ReaderZooming:init()
             ZoomToFitLines = {
                 { "Shift", "H" },
                 doc = "zoom for horizontal panning",
-                event = "SetZoomMode", args = "lne"
+                event = "SetZoomMode", args = "hpanning"
             },
         }
     end
