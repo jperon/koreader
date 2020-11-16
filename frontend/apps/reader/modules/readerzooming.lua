@@ -56,7 +56,7 @@ local ReaderZooming = InputContainer:new{
     },
     panned_modes = {
         column = _("In most cases, with column zoom mode, you'll want to set page view."),
-        hpanning = _("Zoom for horizontal panning only works in page view."),
+        pan = _("Pan zoom only works in page view."),
     }
 }
 
@@ -110,8 +110,8 @@ function ReaderZooming:init()
             },
             ZoomToFitLines = {
                 { "Shift", "H" },
-                doc = "zoom for horizontal panning",
-                event = "SetZoomMode", args = "hpanning"
+                doc = "pan zoom",
+                event = "SetZoomMode", args = "pan"
             },
         }
     end
@@ -407,7 +407,8 @@ function ReaderZooming:getZoom(pageno)
             self.view:onBBoxUpdate(nil)
         end
     else
-        -- otherwise, operate on full page
+        -- otherwise, operate on full page, but throw debug message
+        logger.dbg("ReaderZooming: zoom_mode unknown, which should never occur")
         self.view:onBBoxUpdate(nil)
     end
     -- calculate zoom value:
@@ -498,6 +499,7 @@ function ReaderZooming:genSetZoomModeCallBack(mode)
 end
 
 function ReaderZooming:setZoomMode(mode, no_warning)
+    mode = self.available_zoom_modes[mode] or self.DEFAULT_ZOOM_MODE
     if not no_warning and self.ui.view.page_scroll then
         local message
         if self.paged_modes[mode] then
