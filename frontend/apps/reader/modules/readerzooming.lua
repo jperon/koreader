@@ -621,12 +621,11 @@ function ReaderZooming:onZoomFactorChange()
 end
 
 function ReaderZooming:onZoomPanUpdate(settings)
-    if settings.zoom_pan_right_to_left then
-        self.ui.document.configurable.writing_direction = 1
-    end
     for k, v in pairs(settings) do
+        self[k] = v
         self.ui.doc_settings:saveSetting(k, v)
     end
+    self.ui:handleEvent(Event:new("RedrawCurrentPage"))
 end
 
 function ReaderZooming:makeDefault(zoom_mode, touchmenu_instance)
