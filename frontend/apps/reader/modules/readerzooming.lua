@@ -495,8 +495,8 @@ function ReaderZooming:genSetZoomModeCallBack(mode)
 end
 
 function ReaderZooming:setZoomMode(mode, no_warning)
-    mode = require("util").arrayContains(self.available_zoom_modes, mode) and mode or self.DEFAULT_ZOOM_MODE
     if mode == "column" then
+        mode = "pan"
         local zoom_factor = math.max(2, math.floor(self.zoom_factor))
         self.zoom_factor = zoom_factor
         self.zoom_pan_direction_vertical = true
@@ -507,6 +507,7 @@ function ReaderZooming:setZoomMode(mode, no_warning)
             zoom_pan_h_overlap = 0,
         }))
     end
+    mode = require("util").arrayContains(self.available_zoom_modes, mode) and mode or self.DEFAULT_ZOOM_MODE
     if not no_warning and self.ui.view.page_scroll then
         local message
         if self.paged_modes[mode] then
@@ -613,7 +614,7 @@ function ReaderZooming:onBBoxUpdate()
 end
 
 function ReaderZooming:onZoomFactorChange()
-    self:_zoomFactorChange(self.zoom_mode == "column" and _("Set column number") or _("Set Zoom factor"))
+    self:_zoomFactorChange()
 end
 
 function ReaderZooming:onZoomPanUpdate(settings)
@@ -621,7 +622,6 @@ function ReaderZooming:onZoomPanUpdate(settings)
         self[k] = v
         self.ui.doc_settings:saveSetting(k, v)
     end
-    self.ui:handleEvent(Event:new("RedrawCurrentPage"))
 end
 
 function ReaderZooming:makeDefault(zoom_mode, touchmenu_instance)

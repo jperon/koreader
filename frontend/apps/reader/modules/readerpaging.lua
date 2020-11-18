@@ -479,6 +479,22 @@ function ReaderPaging:onZoomModeUpdate(new_mode)
     self.zoom_mode = new_mode
 end
 
+function ReaderPaging:onZoomPanUpdate(settings)
+    local _settings = {
+        "zoom_pan_h_overlap",
+        "zoom_pan_v_overlap",
+        "zoom_pan_bottom_to_top",
+        "zoom_pan_direction_vertical",
+    }
+    for k, v in pairs(settings) do
+        if require("util").arrayContains(_settings, k) then
+            self[k] = v
+            self.ui.doc_settings:saveSetting(k, v)
+        end
+    end
+    self.ui:handleEvent(Event:new("RedrawCurrentPage"))
+end
+
 function ReaderPaging:onPageUpdate(new_page_no, orig_mode)
     self.current_page = new_page_no
     if self.view.page_scroll and orig_mode ~= "scrolling" then
