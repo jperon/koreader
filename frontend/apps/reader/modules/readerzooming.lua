@@ -54,10 +54,6 @@ local ReaderZooming = InputContainer:new{
         contentheight = _("Zoom to fit content height works best with page view."),
         content = _("Zoom to fit content works best with page view."),
     },
-    panned_modes = {
-        column = _("Page view normally works best with column zoom mode."),
-        pan = _("Pan zoom only works in page view."),
-    }
 }
 
 function ReaderZooming:init()
@@ -623,7 +619,6 @@ end
 function ReaderZooming:onZoomPanUpdate(settings)
     for k, v in pairs(settings) do
         self[k] = v
-        self.ui.document.configurable[k] = v
         self.ui.doc_settings:saveSetting(k, v)
     end
     self.ui:handleEvent(Event:new("RedrawCurrentPage"))
