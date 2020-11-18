@@ -572,7 +572,8 @@ function ReaderView:recalculate()
         if self.ui.view.footer_visible and not self.ui.view.footer.settings.reclaim_height then
             self.visible_area.h = self.visible_area.h - self.ui.view.footer:getHeight()
         end
-        if self.ui.document.configurable.writing_direction == 0 then
+        if self.ui.document.configurable.writing_direction == 0
+                and not self.ui.document.configurable.inverse_reading_order then
             -- starts from left of page_area
             self.visible_area.x = self.page_area.x
         else

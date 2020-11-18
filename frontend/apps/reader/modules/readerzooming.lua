@@ -623,6 +623,7 @@ end
 function ReaderZooming:onZoomPanUpdate(settings)
     for k, v in pairs(settings) do
         self[k] = v
+        self.ui.document.configurable[k] = v
         self.ui.doc_settings:saveSetting(k, v)
     end
     self.ui:handleEvent(Event:new("RedrawCurrentPage"))
