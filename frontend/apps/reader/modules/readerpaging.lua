@@ -10,6 +10,7 @@ local ReaderZooming = require("apps/reader/modules/readerzooming")
 local UIManager = require("ui/uimanager")
 local bit = require("bit")
 local logger = require("logger")
+local util = require("util")
 local _ = require("gettext")
 local Screen = Device.screen
 
@@ -480,16 +481,12 @@ function ReaderPaging:onZoomModeUpdate(new_mode)
 end
 
 function ReaderPaging:onZoomPanUpdate(settings)
-    local _settings = {
-        "zoom_pan_h_overlap",
-        "zoom_pan_v_overlap",
-        "zoom_pan_bottom_to_top",
-        "zoom_pan_direction_vertical",
-    }
     for k, v in pairs(settings) do
-        if require("util").arrayContains(_settings, k) then
-            self[k] = v
-            self.ui.doc_settings:saveSetting(k, v)
+        if k ~= "zoom_factor" then
+            if util.arrayContains(ReaderZooming.zoom_pan_settings, k) then
+                self[k] = v
+                self.ui.doc_settings:saveSetting(k, v)
+            end
         end
     end
     self.ui:handleEvent(Event:new("RedrawCurrentPage"))
