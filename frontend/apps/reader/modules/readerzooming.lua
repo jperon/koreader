@@ -606,6 +606,7 @@ end
 
 function ReaderZooming:onSetZoomPan(settings, no_redraw)
     if type(settings) == "number" then
+        -- Event coming from bottom menu
         local zoom_direction = {
             [7] = {right_to_left = false, zoom_pan_bottom_to_top = false, zoom_pan_direction_vertical = false},
             [6] = {right_to_left = false, zoom_pan_bottom_to_top = false, zoom_pan_direction_vertical = true },
