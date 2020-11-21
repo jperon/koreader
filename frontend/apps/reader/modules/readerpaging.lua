@@ -480,7 +480,7 @@ function ReaderPaging:onZoomModeUpdate(new_mode)
     self.zoom_mode = new_mode
 end
 
-function ReaderPaging:onZoomPanUpdate(settings)
+function ReaderPaging:onZoomPanUpdate(settings, no_redraw)
     for k, v in pairs(settings) do
         if k ~= "zoom_factor" then
             if util.arrayContains(ReaderZooming.zoom_pan_settings, k) then
@@ -489,7 +489,9 @@ function ReaderPaging:onZoomPanUpdate(settings)
             end
         end
     end
-    self.ui:handleEvent(Event:new("RedrawCurrentPage"))
+    if not no_redraw then
+        self.ui:handleEvent(Event:new("RedrawCurrentPage"))
+    end
 end
 
 function ReaderPaging:onPageUpdate(new_page_no, orig_mode)
