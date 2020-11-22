@@ -30,7 +30,7 @@ local ReaderZooming = InputContainer:new{
     },
     -- default to nil so we can trigger ZoomModeUpdate events on start up
     zoom_mode = nil,
-    DEFAULT_ZOOM_MODE = "contentwidth",
+    DEFAULT_ZOOM_MODE = "pagewidth",
     -- for pan mode: fit to width/zoom_factor,
     -- with overlap of zoom_overlap_h % (horizontally)
     -- and zoom_overlap_v % (vertically).
@@ -107,7 +107,7 @@ function ReaderZooming:init()
             ZoomToFitLines = {
                 { "Shift", "H" },
                 doc = "pan zoom",
-                event = "SetZoomMode", args = "pan"
+                event = "SetZoomMode", args = "manual"
             },
         }
     end
@@ -403,8 +403,7 @@ function ReaderZooming:getZoom(pageno)
             self.view:onBBoxUpdate(nil)
         end
     else
-        -- otherwise, operate on full page, but throw debug message
-        logger.dbg("ReaderZooming: zoom_mode unknown, which should never occur")
+        -- otherwise, operate on full page
         self.view:onBBoxUpdate(nil)
     end
     -- calculate zoom value:
@@ -605,20 +604,6 @@ function ReaderZooming:onZoomFactorChange()
 end
 
 function ReaderZooming:onSetZoomPan(settings, no_redraw)
-    if type(settings) == "number" then
-        -- Event coming from bottom menu
-        local zoom_direction = {
-            [7] = {right_to_left = false, zoom_pan_bottom_to_top = false, zoom_pan_direction_vertical = false},
-            [6] = {right_to_left = false, zoom_pan_bottom_to_top = false, zoom_pan_direction_vertical = true },
-            [5] = {right_to_left = false, zoom_pan_bottom_to_top = true,  zoom_pan_direction_vertical = false},
-            [4] = {right_to_left = false, zoom_pan_bottom_to_top = true,  zoom_pan_direction_vertical = true },
-            [3] = {right_to_left = true,  zoom_pan_bottom_to_top = true,  zoom_pan_direction_vertical = true },
-            [2] = {right_to_left = true,  zoom_pan_bottom_to_top = true,  zoom_pan_direction_vertical = false},
-            [1] = {right_to_left = true,  zoom_pan_bottom_to_top = false, zoom_pan_direction_vertical = true },
-            [0] = {right_to_left = true,  zoom_pan_bottom_to_top = false, zoom_pan_direction_vertical = false},
-        }
-        settings = zoom_direction[settings]
-    end
     for k, v in pairs(settings) do
         if k == "right_to_left" then
             self.ui.document.configurable.writing_direction = v and 1 or 0
