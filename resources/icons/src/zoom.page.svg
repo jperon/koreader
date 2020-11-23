@@ -190,6 +190,127 @@
    height="1320"
    id="rect5" />
   </clipPath>
+ 
+  
+ 
+   
+  
+    
+   <clipPath
+   clipPathUnits="userSpaceOnUse"
+   id="clipPath2018"><g
+     inkscape:label="Clip"
+     id="use2020"><g
+       id="g2735"
+       class="Slide"
+       clip-path="url(#presentation_clip_path)">
+     <g
+   class="Page"
+   id="g2733">
+      <g
+   id="g2699"
+   class="Background">
+       <path
+   fill="#ffffff"
+   stroke="none"
+   d="M 1030,2059 H 0 V 0 h 2059 v 2059 z"
+   id="path2697" />
+      </g>
+      <g
+   class="com.sun.star.drawing.PolyPolygonShape"
+   id="g2707">
+       <g
+   id="g2705">
+        <rect
+   class="BoundingBox"
+   stroke="none"
+   fill="none"
+   x="384"
+   y="279"
+   width="1293"
+   height="1502"
+   id="rect2701" />
+        <path
+   fill="#b2b2b2"
+   stroke="none"
+   d="m 384,279 h 869 l 422,420 V 1780 H 384 Z M 528,422 V 1638 H 1531 V 852 H 1100 V 422 Z m 716,46 v 241 h 242 z m -644,25 h 431 V 673 H 600 Z m 0,251 h 431 V 852 H 600 Z m 0,180 h 859 v 107 H 600 Z m 0,176 h 859 v 107 H 600 Z m 0,179 h 859 v 107 H 600 Z m 0,179 h 859 v 108 H 600 Z"
+   id="path2703" />
+       </g>
+      </g>
+      <g
+   class="com.sun.star.drawing.LineShape"
+   id="g2715">
+       <g
+   id="g2713">
+        <rect
+   class="BoundingBox"
+   stroke="none"
+   fill="none"
+   x="556"
+   y="483"
+   width="951"
+   height="1089"
+   id="rect2709" />
+        <path
+   fill="none"
+   stroke="#000000"
+   stroke-width="80"
+   stroke-linejoin="round"
+   d="m 596,523 870,1008"
+   id="path2711" />
+       </g>
+      </g>
+      <g
+   class="com.sun.star.drawing.PolyPolygonShape"
+   id="g2723">
+       <g
+   id="g2721">
+        <rect
+   class="BoundingBox"
+   stroke="none"
+   fill="none"
+   x="389"
+   y="283"
+   width="353"
+   height="369"
+   id="rect2717" />
+        <path
+   fill="#000000"
+   stroke="none"
+   d="M 482,650 390,283 740,430 Z"
+   id="path2719" />
+       </g>
+      </g>
+      <g
+   class="com.sun.star.drawing.PolyPolygonShape"
+   id="g2731">
+       <g
+   id="g2729">
+        <rect
+   class="BoundingBox"
+   stroke="none"
+   fill="none"
+   x="1321"
+   y="1403"
+   width="353"
+   height="369"
+   id="rect2725" />
+        <path
+   fill="#000000"
+   stroke="none"
+   d="m 1580,1403 92,368 -350,-147 z"
+   id="path2727" />
+       </g>
+      </g>
+     </g>
+    </g></g></clipPath></defs>
+ <defs
+   class="TextShapeIndex"
+   id="defs1847">
+  <g
+   ooo:slide="id1"
+   ooo:id-list="id3 id4 id5 id6"
+   id="g1845" />
  </defs>
  <defs
    class="TextShapeIndex"
