@@ -612,7 +612,13 @@ function ReaderZooming:onSetZoomPan(settings, no_redraw)
             self.ui.doc_settings:saveSetting(k, v)
         end
     end
-    self.ui:handleEvent(Event:new("ZoomPanUpdate", settings, no_redraw))
+    if not no_redraw then
+        self.ui:handleEvent(Event:new("RedrawCurrentPage"))
+    end
+end
+
+function ReaderZooming:onBBoxUpdate()
+    self:onDefineZoom()
 end
 
 function ReaderZooming:makeDefault(zoom_mode, touchmenu_instance)

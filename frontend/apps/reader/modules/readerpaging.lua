@@ -480,20 +480,6 @@ function ReaderPaging:onZoomModeUpdate(new_mode)
     self.zoom_mode = new_mode
 end
 
-function ReaderPaging:onZoomPanUpdate(settings, no_redraw)
-    for k, v in pairs(settings) do
-        if k ~= "zoom_factor" then
-            if util.arrayContains(ReaderZooming.zoom_pan_settings, k) then
-                self[k] = v
-                self.ui.doc_settings:saveSetting(k, v)
-            end
-        end
-    end
-    if not no_redraw then
-        self.ui:handleEvent(Event:new("RedrawCurrentPage"))
-    end
-end
-
 function ReaderPaging:onPageUpdate(new_page_no, orig_mode)
     self.current_page = new_page_no
     if self.view.page_scroll and orig_mode ~= "scrolling" then
