@@ -32,6 +32,7 @@ local Terminal = WidgetContainer:new{
 }
 
 function Terminal:onDispatcherRegisterActions()
+    require("logger").dbg("CLOCK Terminal")
     Dispatcher:registerAction("show_terminal", { category = "none", event = "TerminalStart", title = _("Show terminal"), device = true, })
 end
 
