@@ -24,3 +24,6 @@
 [submodule "plugins/clock.koplugin"]
 	path = plugins/clock.koplugin
 	url = https://github.com/jperon/clock.koplugin
+[submodule "plugins/2048.koplugin"]
+	path = plugins/2048.koplugin
+	url = /home/jacques/Programmes/Liseuse/2048.koplugin
