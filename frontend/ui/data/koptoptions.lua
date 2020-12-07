@@ -1,8 +1,8 @@
 local BD = require("ui/bidi")
 local Device = require("device")
-local S = require("ui/data/strings")
 local optionsutil = require("ui/data/optionsutil")
 local _ = require("gettext")
+local C_ = _.pgettext
 local Screen = Device.screen
 
 -- The values used for Font Size are not actually font sizes, but kopt zoom levels.
@@ -27,8 +27,8 @@ local KoptOptions = {
         options = {
             {
                 name = "rotation_mode",
-                name_text = S.SCREEN_MODE,
-                toggle = {S.LANDSCAPE_ROTATED, S.PORTRAIT, S.LANDSCAPE, S.PORTRAIT_ROTATED},
+                name_text = _("Rotation"),
+                toggle = {C_("Rotation", "⤹ 90°"), C_("Rotation", "↑ 0°"), C_("Rotation", "⤸ 90°"), C_("Rotation", "↓ 180°")},
                 alternate = false,
                 values = {Screen.ORIENTATION_LANDSCAPE_ROTATED, Screen.ORIENTATION_PORTRAIT, Screen.ORIENTATION_LANDSCAPE, Screen.ORIENTATION_PORTRAIT_ROTATED},
                 args = {Screen.ORIENTATION_LANDSCAPE_ROTATED, Screen.ORIENTATION_PORTRAIT, Screen.ORIENTATION_LANDSCAPE, Screen.ORIENTATION_PORTRAIT_ROTATED},
@@ -44,10 +44,10 @@ local KoptOptions = {
         options = {
             {
                 name = "trim_page",
-                name_text = S.PAGE_CROP,
+                name_text = _("Page Crop"),
                 -- manual=0, auto=1, semi-auto=2, none=3
                 -- ordered from least to max cropping done or possible
-                toggle = {S.NONE, S.AUTO, S.SEMIAUTO, S.MANUAL},
+                toggle = {_("none"), _("auto"), _("semi-auto"), _("manual")},
                 alternate = false,
                 values = {3, 1, 2, 0},
                 default_value = DKOPTREADER_CONFIG_TRIM_PAGE,
@@ -66,8 +66,8 @@ In 'semi-auto' and 'manual' modes, you may need to define areas once on an odd p
             },
             {
                 name = "page_margin",
-                name_text = S.PAGE_MARGIN,
-                toggle = {S.SMALL, S.MEDIUM, S.LARGE},
+                name_text = _("Margin"),
+                toggle = {_("small"), _("medium"), _("large")},
                 values = {0.05, 0.10, 0.25},
                 default_value = DKOPTREADER_CONFIG_PAGE_MARGIN,
                 event = "MarginUpdate",
@@ -140,7 +140,7 @@ In 'semi-auto' and 'manual' modes, you may need to define areas once on an odd p
                 show_true_value_func = function(str)
                     return string.format("%.1f", str)
                 end,
-                toggle =  {_("1"), _("2"), _("3"), _("4"), _("5"), _("6"), _("7"), _("8")},
+                toggle =  {"1", "2", "3", "4", "5", "6", "7", "8"},
                 more_options = true,
                 more_options_param = {
                     value_step = 0.1, value_hold_step = 1,
@@ -165,7 +165,7 @@ In 'semi-auto' and 'manual' modes, you may need to define areas once on an odd p
                 show_true_value_func = function(str)
                     return string.format("%.1f", str)
                 end,
-                toggle =  {_("0.7"), _("1"), _("1.5"), _("2"), _("3"), _("5"), _("10"), _("20")},
+                toggle =  {"0.7", "1", "1.5", "2", "3", "5", "10", "20"},
                 more_options = true,
                 more_options_param = {
                     value_step = 0.1, value_hold_step = 1,
@@ -383,8 +383,8 @@ left to right or reverse, top to bottom or reverse.]]),
         options = {
             {
                 name = "page_scroll",
-                name_text = S.VIEW_MODE,
-                toggle = {S.VIEW_PAGE, S.VIEW_SCROLL},
+                name_text = _("View Mode"),
+                toggle = {_("page"), _("continuous")},
                 values = {0, 1},
                 default_value = 1,
                 event = "SetScrollMode",
@@ -395,8 +395,8 @@ left to right or reverse, top to bottom or reverse.]]),
             },
             {
                 name = "page_gap_height",
-                name_text = S.PAGE_GAP,
-                toggle = {S.NONE, S.SMALL, S.MEDIUM, S.LARGE},
+                name_text = _("Page Gap"),
+                toggle = {_("none"), _("small"), _("medium"), _("large")},
                 values = {0, 8, 16, 32},
                 default_value = 8,
                 args = {0, 8, 16, 32},
@@ -409,8 +409,8 @@ left to right or reverse, top to bottom or reverse.]]),
             },
             {
                 name = "full_screen",
-                name_text = S.PROGRESS_BAR,
-                toggle = {S.OFF, S.ON},
+                name_text = _("Progress Bar"),
+                toggle = {_("off"), _("on")},
                 values = {1, 0},
                 default_value = 1,
                 event = "SetFullScreen",
@@ -420,8 +420,8 @@ left to right or reverse, top to bottom or reverse.]]),
             },
             {
                 name = "line_spacing",
-                name_text = S.LINE_SPACING,
-                toggle = {S.SMALL, S.MEDIUM, S.LARGE},
+                name_text = _("Line Spacing"),
+                toggle = {_("small"), _("medium"), _("large")},
                 values = {1.0, 1.2, 1.4},
                 default_value = DKOPTREADER_CONFIG_LINE_SPACING,
                 advanced = true,
@@ -434,7 +434,8 @@ left to right or reverse, top to bottom or reverse.]]),
             },
             {
                 name = "justification",
-                name_text = S.TEXT_ALIGN,
+                --- @translators Text alignment. Options given as icons: left, right, center, justify.
+                name_text = _("Alignment"),
                 item_icons = {
                     "resources/icons/appbar.align.auto.png",
                     "resources/icons/appbar.align.left.png",
@@ -448,7 +449,13 @@ left to right or reverse, top to bottom or reverse.]]),
                 enabled_func = function(configurable)
                     return optionsutil.enableIfEquals(configurable, "text_wrap", 1)
                 end,
-                labels = {S.AUTO, S.LEFT, S.CENTER, S.RIGHT, S.JUSTIFY},
+                labels = {
+                    C_("Alignment", "auto"),
+                    C_("Alignment", "left"),
+                    C_("Alignment", "center"),
+                    C_("Alignment", "right"),
+                    C_("Alignment", "justify"),
+                },
                 name_text_hold_callback = optionsutil.showValues,
                 help_text = _([[In reflow mode, sets the text alignment.
 The first option ("auto") tries to automatically align reflowed text as it is in the original document.]]),
@@ -476,9 +483,9 @@ The first option ("auto") tries to automatically align reflowed text as it is in
             },
             {
                 name = "font_fine_tune",
-                name_text = S.FONT_SIZE,
-                toggle = Device:isTouchDevice() and {S.DECREASE, S.INCREASE} or nil,
-                item_text = not Device:isTouchDevice() and {S.DECREASE, S.INCREASE} or nil,
+                name_text = _("Font Size"),
+                toggle = Device:isTouchDevice() and {_("decrease"), _("increase")} or nil,
+                item_text = not Device:isTouchDevice() and {_("decrease"), _("increase")} or nil,
                 values = {-0.05, 0.05},
                 default_value = 0.05,
                 event = "FineTuningFontSize",
@@ -499,8 +506,8 @@ The first option ("auto") tries to automatically align reflowed text as it is in
             },
             {
                 name = "word_spacing",
-                name_text = S.WORD_GAP,
-                toggle = {S.SMALL, S.AUTO, S.LARGE},
+                name_text = _("Word Gap"),
+                toggle = {_("small"), _("auto"), _("large")},
                 values = DKOPTREADER_CONFIG_WORD_SPACINGS,
                 default_value = DKOPTREADER_CONFIG_DEFAULT_WORD_SPACING,
                 enabled_func = function(configurable)
@@ -511,8 +518,9 @@ The first option ("auto") tries to automatically align reflowed text as it is in
             },
             {
                 name = "text_wrap",
-                name_text = S.REFLOW,
-                toggle = {S.OFF, S.ON},
+                --- @translators Reflow text.
+                name_text = _("Reflow"),
+                toggle = {_("off"), _("on")},
                 values = {0, 1},
                 default_value = DKOPTREADER_CONFIG_TEXT_WRAP,
                 events = {
@@ -537,7 +545,7 @@ Some of the other settings are only available when reflow mode is enabled.]]),
         options = {
             {
                 name = "contrast",
-                name_text = S.CONTRAST,
+                name_text = _("Contrast"),
                 buttonprogress = true,
                 -- See https://github.com/koreader/koreader/issues/1299#issuecomment-65183895
                 -- For pdf reflowing mode (kopt_contrast):
@@ -552,8 +560,8 @@ Some of the other settings are only available when reflow mode is enabled.]]),
             },
             {
                 name = "page_opt",
-                name_text = S.DEWATERMARK,
-                toggle = {S.OFF, S.ON},
+                name_text = _("Dewatermark"),
+                toggle = {_("off"), _("on")},
                 values = {0, 1},
                 default_value = 0,
                 name_text_hold_callback = optionsutil.showValues,
@@ -562,8 +570,8 @@ This can also be used to remove some gray background or to convert a grayscale o
             },
             {
                 name = "hw_dithering",
-                name_text = S.HW_DITHERING,
-                toggle = {S.OFF, S.ON},
+                name_text = _("Dithering"),
+                toggle = {_("off"), _("on")},
                 values = {0, 1},
                 default_value = 0,
                 advanced = true,
@@ -573,8 +581,8 @@ This can also be used to remove some gray background or to convert a grayscale o
             },
             {
                 name = "quality",
-                name_text = S.RENDER_QUALITY,
-                toggle = {S.LOW, S.DEFAULT, S.HIGH},
+                name_text = C_("Quality", "Render Quality"),
+                toggle = {C_("Quality", "low"), C_("Quality", "default"), C_("Quality", "high")},
                 values={0.5, 1.0, 1.5},
                 default_value = DKOPTREADER_CONFIG_RENDER_QUALITY,
                 advanced = true,
@@ -591,7 +599,7 @@ This can also be used to remove some gray background or to convert a grayscale o
         options = {
             {
                 name="doc_language",
-                name_text = S.DOC_LANG,
+                name_text = _("Document Language"),
                 toggle = DKOPTREADER_CONFIG_DOC_LANGS_TEXT,
                 values = DKOPTREADER_CONFIG_DOC_LANGS_CODE,
                 default_value = DKOPTREADER_CONFIG_DOC_DEFAULT_LANG_CODE,
@@ -602,8 +610,9 @@ This can also be used to remove some gray background or to convert a grayscale o
             },
             {
                 name = "forced_ocr",
-                name_text = S.FORCED_OCR,
-                toggle = {S.OFF, S.ON},
+                --- @translators If OCR is unclear, please see https://en.wikipedia.org/wiki/Optical_character_recognition
+                name_text = _("Forced OCR"),
+                toggle = {_("off"), _("on")},
                 values = {0, 1},
                 default_value = 0,
                 advanced = true,
@@ -612,11 +621,18 @@ This can also be used to remove some gray background or to convert a grayscale o
             },
             {
                 name = "writing_direction",
-                name_text = S.WRITING_DIR,
+                name_text = _("Writing Direction"),
                 enabled_func = function(configurable)
                     return optionsutil.enableIfEquals(configurable, "text_wrap", 1)
                 end,
-                toggle = {S.LTR, S.RTL, S.TBRTL},
+                toggle = {
+                    --- @translators LTR is left to right, which is the regular European writing direction.
+                    _("LTR"),
+                    --- @translators RTL is right to left, which is the regular writing direction in languages like Hebrew, Arabic, Persian and Urdu.
+                    _("RTL"),
+                    --- @translators TBRTL is top-to-bottom-right-to-left, which is a traditional Chinese/Japanese writing direction.
+                    _("TBRTL"),
+                },
                 values = {0, 1, 2},
                 default_value = 0,
                 name_text_hold_callback = optionsutil.showValues,
@@ -624,8 +640,9 @@ This can also be used to remove some gray background or to convert a grayscale o
             },
             {
                 name = "defect_size",
-                name_text = S.DEFECT_SIZE,
-                toggle = {S.SMALL, S.MEDIUM, S.LARGE},
+                --- @translators The maximum size of a dust or ink speckle to be ignored instead of being considered a character.
+                name_text = _("Reflow Speckle Ignore Size"),
+                toggle = {_("small"), _("medium"), _("large")},
                 values = {1.0, 3.0, 5.0},
                 default_value = DKOPTREADER_CONFIG_DEFECT_SIZE,
                 event = "DefectSizeUpdate",
@@ -637,8 +654,8 @@ This can also be used to remove some gray background or to convert a grayscale o
             },
             {
                 name = "auto_straighten",
-                name_text = S.AUTO_STRAIGHTEN,
-                toggle = {S.ZERO_DEG, S.FIVE_DEG, S.TEN_DEG},
+                name_text = _("Auto Straighten"),
+                toggle = {_("0 deg"), _("5 deg"), _("10 deg")},
                 values = {0, 5, 10},
                 default_value = DKOPTREADER_CONFIG_AUTO_STRAIGHTEN,
                 show = false, -- does not work (and slows rendering)
@@ -649,8 +666,8 @@ This can also be used to remove some gray background or to convert a grayscale o
             },
             {
                 name = "detect_indent",
-                name_text = S.INDENTATION,
-                toggle = {S.OFF, S.ON},
+                name_text = _("Indentation"),
+                toggle = {_("off"), _("on")},
                 values = {0, 1},
                 default_value = DKOPTREADER_CONFIG_DETECT_INDENT,
                 show = false, -- does not work
@@ -661,7 +678,7 @@ This can also be used to remove some gray background or to convert a grayscale o
             },
             {
                 name = "max_columns",
-                name_text = S.DOCUMENT_COLUMNS,
+                name_text = _("Document Columns"),
                 item_icons = {
                     "resources/icons/appbar.column.one.png",
                     "resources/icons/appbar.column.two.png",

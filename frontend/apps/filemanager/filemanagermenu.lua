@@ -73,6 +73,18 @@ function FileManagerMenu:initGesListener()
             handler = function(ges) return self:onTapShowMenu(ges) end,
         },
         {
+            id = "filemanager_ext_tap",
+            ges = "tap",
+            screen_zone = {
+                ratio_x = DTAP_ZONE_MENU_EXT.x, ratio_y = DTAP_ZONE_MENU_EXT.y,
+                ratio_w = DTAP_ZONE_MENU_EXT.w, ratio_h = DTAP_ZONE_MENU_EXT.h,
+            },
+            overrides = {
+                "filemanager_tap",
+            },
+            handler = function(ges) return self:onTapShowMenu(ges) end,
+        },
+        {
             id = "filemanager_swipe",
             ges = "swipe",
             screen_zone = {
@@ -82,6 +94,18 @@ function FileManagerMenu:initGesListener()
             overrides = {
                 "rolling_swipe",
                 "paging_swipe",
+            },
+            handler = function(ges) return self:onSwipeShowMenu(ges) end,
+        },
+        {
+            id = "filemanager_ext_swipe",
+            ges = "swipe",
+            screen_zone = {
+                ratio_x = DTAP_ZONE_MENU_EXT.x, ratio_y = DTAP_ZONE_MENU_EXT.y,
+                ratio_w = DTAP_ZONE_MENU_EXT.w, ratio_h = DTAP_ZONE_MENU_EXT.h,
+            },
+            overrides = {
+                "filemanager_swipe",
             },
             handler = function(ges) return self:onSwipeShowMenu(ges) end,
         },
@@ -565,8 +589,21 @@ dbg:guard(FileManagerMenu, 'setUpdateItemTable',
         end
     end)
 
-function FileManagerMenu:exitOrRestart(callback)
+function FileManagerMenu:exitOrRestart(callback, force)
     UIManager:close(self.menu_container)
+
+    -- Only restart sets a callback, which suits us just fine for this check ;)
+    if callback and not force and not Device:isStartupScriptUpToDate() then
+        UIManager:show(ConfirmBox:new{
+            text = _("KOReader's startup script has been updated. You'll need to completely exit KOReader to finalize the update."),
+            ok_text = _("Restart anyway"),
+            ok_callback = function()
+                self:exitOrRestart(callback, true)
+            end,
+        })
+        return
+    end
+
     self.ui:onClose()
     if callback then
         callback()

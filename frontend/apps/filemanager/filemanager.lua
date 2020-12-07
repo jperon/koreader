@@ -121,8 +121,7 @@ function FileManager:init()
         padding_left = Size.padding.large,
         padding_right = Size.padding.large,
         padding_bottom = 0,
-        callback = nil, -- top right corner callback handled by gesture manager
-        hold_callback = nil, -- top right corner hold_callback handled by gesture manager
+        callback = function() self:onShowPlusMenu() end,
     }
 
     self.path_text = TextWidget:new{
@@ -479,19 +478,22 @@ function FileManager:init()
     table.insert(self, DeviceListener:new{ ui = self })
 
     -- koreader plugins
-    for _,plugin_module in ipairs(PluginLoader:loadPlugins()) do
-        if not plugin_module.is_doc_only then
-            local ok, plugin_or_err = PluginLoader:createPluginInstance(
-                plugin_module, { ui = self, })
-            -- Keep references to the modules which do not register into menu.
-            if ok then
-                local name = plugin_module.name
-                if name then self[name] = plugin_or_err end
-                table.insert(self, plugin_or_err)
-                logger.info("FM loaded plugin", name,
-                            "at", plugin_module.path)
+    if not self._plugins_loaded then
+        for _,plugin_module in ipairs(PluginLoader:loadPlugins()) do
+            if not plugin_module.is_doc_only then
+                local ok, plugin_or_err = PluginLoader:createPluginInstance(
+                    plugin_module, { ui = self, })
+                -- Keep references to the modules which do not register into menu.
+                if ok then
+                    local name = plugin_module.name
+                    if name then self[name] = plugin_or_err end
+                    table.insert(self, plugin_or_err)
+                    logger.info("FM loaded plugin", name,
+                                "at", plugin_module.path)
+                end
             end
         end
+        self._plugins_loaded = true
     end
 
     if Device:hasWifiToggle() then
@@ -641,11 +643,37 @@ function FileManager:tapPlus()
         table.insert(buttons, 3, {
             {
                 text = _("Import files here"),
-                enabled = Device.isValidPath(self.file_chooser.path),
+                enabled = Device:isValidPath(self.file_chooser.path),
                 callback = function()
                     local current_dir = self.file_chooser.path
                     UIManager:close(self.file_dialog)
                     Device.importFile(current_dir)
+                end,
+            },
+        })
+    end
+
+    if Device:hasExternalSD() then
+        table.insert(buttons, 4, {
+            {
+                text_func = function()
+                    if Device:isValidPath(self.file_chooser.path) then
+                        return _("Switch to SDCard")
+                    else
+                        return _("Switch to internal storage")
+                    end
+                end,
+                callback = function()
+                    if Device:isValidPath(self.file_chooser.path) then
+                        local ok, sd_path = Device:hasExternalSD()
+                        UIManager:close(self.file_dialog)
+                        if ok then
+                            self.file_chooser:changeToPath(sd_path)
+                        end
+                    else
+                        UIManager:close(self.file_dialog)
+                        self.file_chooser:changeToPath(Device.home_dir)
+                    end
                 end,
             },
         })
