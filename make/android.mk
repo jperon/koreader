@@ -97,6 +97,8 @@ update-apk: all
 	# Binaries are stored as shared libraries to prevent W^X exception on Android 10+
 	# https://developer.android.com/about/versions/10/behavior-changes-10#execute-permission
 	cp -v $(INSTALL_DIR)/koreader/sdcv $(ANDROID_LIBS)/libsdcv$(LIB_EXT)
+	# Stockfish (kochess chess engine), same W^X workaround as sdcv above.
+	$(ANDROID_DIR)/fetch-stockfish.sh $(ANDROID_ABI) $(ANDROID_LIBS)/libstockfish$(LIB_EXT)
 	# Assets are compressed manually and stored inside the APK.
 	cd $(INSTALL_DIR)/koreader && \
 	  ./tools/mkrelease.sh \
