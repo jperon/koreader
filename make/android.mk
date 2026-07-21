@@ -69,6 +69,7 @@ endif
 define UPDATE_PATH_EXCLUDES +=
 plugins/SSH.koplugin
 plugins/autofrontlight.koplugin
+plugins/customtopmenu.koplugin
 plugins/hello.koplugin
 plugins/timesync.koplugin
 tools
