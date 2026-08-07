@@ -41,3 +41,11 @@ i18n
 /.cproject
 /.project
 .gitignore~
+
+# personal dev-environment cruft
+/plugins/log
+/plugins/plugins.txt
+/.vscode-ctags
+/platform/android/prebuilt-libs/
+# synced from custom_plugins/kochess.koplugin/icons at build time, see make/android.mk
+/resources/icons/chess/
