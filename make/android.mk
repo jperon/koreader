@@ -99,6 +99,11 @@ update-apk: all
 	cp -v $(INSTALL_DIR)/koreader/sdcv $(ANDROID_LIBS)/libsdcv$(LIB_EXT)
 	# Stockfish (kochess chess engine), same W^X workaround as sdcv above.
 	$(ANDROID_DIR)/fetch-stockfish.sh $(ANDROID_ABI) $(ANDROID_LIBS)/libstockfish$(LIB_EXT)
+	# kochess board icons: sourced from the plugin itself, not tracked here.
+	@if [ -d custom_plugins/kochess.koplugin/icons ]; then \
+		mkdir -p resources/icons/chess && \
+		cp -v custom_plugins/kochess.koplugin/icons/* resources/icons/chess/; \
+	fi
 	# Assets are compressed manually and stored inside the APK.
 	cd $(INSTALL_DIR)/koreader && \
 	  ./tools/mkrelease.sh \
