@@ -1,0 +1,1 @@
+../../custom_plugins/vatican.koplugin/spec/unit/vatican_spec.lua
