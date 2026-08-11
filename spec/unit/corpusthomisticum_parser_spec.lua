@@ -1,0 +1,1 @@
+../../custom_plugins/corpusthomisticum.koplugin/spec/unit/parser_spec.lua
