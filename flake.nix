@@ -194,6 +194,47 @@
             exec ./luajit ../../custom_plugins/vatican.koplugin/smoketest.lua "$@"
           '';
         };
+
+        # Downloads the real divinum-officium data and generates a real 1962
+        # office end-to-end through the actual plugin code (not the busted
+        # test harness). Needs an emulator build (nix run .#build) and network.
+        breviariumSmoke = pkgs.writeShellApplication {
+          name = "breviarium-smoke";
+          runtimeInputs = commonPackages;
+          text = ''
+            ${commonEnv}
+            ${emulatorEnv}
+            emulator=(./koreader-emulator-*/koreader)
+            if [ ! -x "''${emulator[0]}/luajit" ]; then
+              echo "$0: no emulator build found — run 'nix run .#build' first" >&2
+              exit 1
+            fi
+            cd "''${emulator[0]}"
+            exec ./luajit ../../custom_plugins/breviarium.koplugin/smoketest.lua "$@"
+          '';
+        };
+
+        # Throwaway verification tool (not shipped): loops over a year of
+        # dates and writes the port's own rendered HTML per day/hora, via
+        # the real plugin code. Controlled by env vars (GENCORPUS_YEAR,
+        # GENCORPUS_OUTDIR, GENCORPUS_ONLY_DATE, GENCORPUS_FROM_DATE -- see
+        # custom_plugins/breviarium.koplugin/gencorpus.lua's own header).
+        # Needs an emulator build (nix run .#build) and network.
+        breviariumGencorpus = pkgs.writeShellApplication {
+          name = "breviarium-gencorpus";
+          runtimeInputs = commonPackages;
+          text = ''
+            ${commonEnv}
+            ${emulatorEnv}
+            emulator=(./koreader-emulator-*/koreader)
+            if [ ! -x "''${emulator[0]}/luajit" ]; then
+              echo "$0: no emulator build found — run 'nix run .#build' first" >&2
+              exit 1
+            fi
+            cd "''${emulator[0]}"
+            exec ./luajit ../../custom_plugins/breviarium.koplugin/gencorpus.lua "$@"
+          '';
+        };
       in
       {
         devShells.default = pkgs.mkShell {
@@ -217,6 +258,14 @@
           vatican-smoke = {
             type = "app";
             program = "${vaticanSmoke}/bin/vatican-smoke";
+          };
+          breviarium-smoke = {
+            type = "app";
+            program = "${breviariumSmoke}/bin/breviarium-smoke";
+          };
+          breviarium-gencorpus = {
+            type = "app";
+            program = "${breviariumGencorpus}/bin/breviarium-gencorpus";
           };
           default = self.apps.${system}.run;
         };

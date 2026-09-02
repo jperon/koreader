@@ -1,0 +1,1 @@
+../../custom_plugins/breviarium.koplugin/spec/unit/breviarium_spec.lua
