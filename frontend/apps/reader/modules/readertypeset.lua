@@ -285,8 +285,8 @@ This stylesheet is to be used only with FB2 and FB3 documents, which are not cla
     -- Add the obsoleted ones to the Obsolete sub menu
     local obsoleted_css = {} -- for check_func of the Obsolete sub menu itself
     for __, css in ipairs(OBSOLETED_CSS) do
-        obsoleted_css[css_files[css]] = css
         if css_files[css] then
+            obsoleted_css[css_files[css]] = css
             table.insert(obsoleted_table, getStyleMenuItem(css, css_files[css], _("This stylesheet is obsolete: don't use it. It is kept solely to be able to open documents last read years ago and to migrate their highlights.")))
             css_files[css] = nil
         end
