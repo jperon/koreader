@@ -151,7 +151,14 @@ ifdef WIN32
 	$(SYMLINK) $(WIN32_DIR)/*.dll $(INSTALL_DIR)/koreader/
 endif
 	@echo "[*] Install plugins"
+ifneq (,$(and $(EMULATE_READER),$(CUSTOM_PLUGINS)))
+	rm -rf $(INSTALL_DIR)/koreader/plugins
+	install -d $(INSTALL_DIR)/koreader/plugins
+	bash -O extglob -c '$(SYMLINK) $(abspath plugins)/*.koplugin $(INSTALL_DIR)/koreader/plugins/'
+	bash -O extglob -c '$(SYMLINK) $(abspath custom_plugins)/*.koplugin $(INSTALL_DIR)/koreader/plugins/'
+else
 	$(SYMLINK) plugins $(INSTALL_DIR)/koreader/
+endif
 	@echo "[*] Install resources"
 	$(SYMLINK) resources/fonts $(INSTALL_DIR)/koreader/fonts
 	install -d $(INSTALL_DIR)/koreader/{screenshots,fonts/host,ota}
