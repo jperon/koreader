@@ -177,6 +177,24 @@
           '';
         };
 
+        # Same as kodevApp, but also asks the Makefile to merge
+        # custom_plugins/*.koplugin into the emulator's plugin directory
+        # (see Makefile's "Install plugins" step).
+        kodevAppCustomPlugins = name: args: pkgs.writeShellApplication {
+          inherit name;
+          runtimeInputs = commonPackages;
+          text = ''
+            ${commonEnv}
+            if [ ! -x ./kodev ]; then
+              echo "$0: run me from a KOReader checkout (no ./kodev here)" >&2
+              exit 1
+            fi
+            ${emulatorEnv}
+            export CUSTOM_PLUGINS=1
+            exec ./kodev ${args} "$@"
+          '';
+        };
+
         # Checks vatican.koplugin against the live site, which the offline unit
         # tests deliberately cannot do. Needs an emulator build (nix run .#build).
         vaticanSmoke = pkgs.writeShellApplication {
@@ -250,6 +268,10 @@
           run = {
             type = "app";
             program = "${kodevApp "koreader-run" "run"}/bin/koreader-run";
+          };
+          run-custom-plugins = {
+            type = "app";
+            program = "${kodevAppCustomPlugins "koreader-run-custom-plugins" "run"}/bin/koreader-run-custom-plugins";
           };
           test = {
             type = "app";
