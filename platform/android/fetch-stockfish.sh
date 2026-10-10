@@ -46,9 +46,25 @@ ndk_bin="$ndk/toolchains/llvm/prebuilt/$host/bin"
 cxx="$ndk_bin/$clang_prefix"
 [ -x "$cxx" ] || { echo "fetch-stockfish.sh: $cxx introuvable" >&2; exit 1; }
 
+# Identity of the NDK, so a binary built with one NDK is never silently reused
+# by a build using another (a binary built with NDK 26 has been observed being
+# bundled by a build using NDK 23.2). Prefer Pkg.Revision from
+# source.properties; fall back to a short hash of the NDK path if unreadable.
+ndk_revision=""
+if [ -f "$ndk/source.properties" ]; then
+    ndk_revision="$(awk -F' *= *' '/^Pkg\.Revision/ {print $2; exit}' "$ndk/source.properties")"
+fi
+if [ -z "$ndk_revision" ]; then
+    if command -v sha256sum >/dev/null 2>&1; then
+        ndk_revision="$(printf '%s' "$ndk" | sha256sum | cut -c1-8)"
+    else
+        ndk_revision="$(printf '%s' "$ndk" | shasum -a 256 | cut -c1-8)"
+    fi
+fi
+
 cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/koreader-stockfish"
 tarball="$cache_dir/$sf_tag.tar.gz"
-cached_bin="$cache_dir/stockfish-$sf_tag-$abi"
+cached_bin="$cache_dir/stockfish-$sf_tag-$abi-ndk$ndk_revision"
 mkdir -p "$cache_dir" "$(dirname "$dest")"
 
 sha256_of() {
