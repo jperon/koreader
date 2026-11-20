@@ -10,7 +10,7 @@ set -euo pipefail
 abi="${1:-}"
 dest="${2:-}"
 
-case "$abi" in
+case "${abi}" in
     arm64-v8a)
         sf_arch="general-64"
         clang_prefix="aarch64-linux-android21-clang++"
@@ -20,12 +20,12 @@ case "$abi" in
         clang_prefix="armv7a-linux-androideabi21-clang++"
         ;;
     *)
-        echo "fetch-stockfish.sh: no Stockfish build for ABI '$abi', skipping." >&2
+        echo "fetch-stockfish.sh: no Stockfish build for ABI '${abi}', skipping." >&2
         exit 0
         ;;
 esac
 
-[ -n "$dest" ] || { echo "fetch-stockfish.sh: destination manquante" >&2; exit 1; }
+[ -n "${dest}" ] || { echo "fetch-stockfish.sh: destination manquante" >&2; exit 1; }
 
 sf_tag="sf_11"
 sf_url="https://github.com/official-stockfish/Stockfish/archive/refs/tags/sf_11.tar.gz"
@@ -33,7 +33,7 @@ sf_sha256="802261cc601b67bed00c0ef7d21e2125959630f0852a06db9fc9bd74f440b199"
 sf_dir="Stockfish-sf_11"
 
 ndk="${ANDROID_NDK_HOME:-${ANDROID_NDK_ROOT:-}}"
-if [ -z "$ndk" ]; then
+if [ -z "${ndk}" ]; then
     echo "fetch-stockfish.sh: ANDROID_NDK_HOME / ANDROID_NDK_ROOT not set" >&2
     exit 1
 fi
@@ -42,30 +42,30 @@ host="linux-x86_64"
 case "$(uname -s)" in
     Darwin) host="darwin-x86_64" ;;
 esac
-ndk_bin="$ndk/toolchains/llvm/prebuilt/$host/bin"
-cxx="$ndk_bin/$clang_prefix"
-[ -x "$cxx" ] || { echo "fetch-stockfish.sh: $cxx introuvable" >&2; exit 1; }
+ndk_bin="${ndk}/toolchains/llvm/prebuilt/${host}/bin"
+cxx="${ndk_bin}/${clang_prefix}"
+[ -x "${cxx}" ] || { echo "fetch-stockfish.sh: ${cxx} introuvable" >&2; exit 1; }
 
 # Identity of the NDK, so a binary built with one NDK is never silently reused
 # by a build using another (a binary built with NDK 26 has been observed being
 # bundled by a build using NDK 23.2). Prefer Pkg.Revision from
 # source.properties; fall back to a short hash of the NDK path if unreadable.
 ndk_revision=""
-if [ -f "$ndk/source.properties" ]; then
-    ndk_revision="$(awk -F' *= *' '/^Pkg\.Revision/ {print $2; exit}' "$ndk/source.properties")"
+if [ -f "${ndk}/source.properties" ]; then
+    ndk_revision="$(awk -F' *= *' '/^Pkg\.Revision/ {print $2; exit}' "${ndk}/source.properties")"
 fi
-if [ -z "$ndk_revision" ]; then
+if [ -z "${ndk_revision}" ]; then
     if command -v sha256sum >/dev/null 2>&1; then
-        ndk_revision="$(printf '%s' "$ndk" | sha256sum | cut -c1-8)"
+        ndk_revision="$(printf '%s' "${ndk}" | sha256sum | cut -c1-8)"
     else
-        ndk_revision="$(printf '%s' "$ndk" | shasum -a 256 | cut -c1-8)"
+        ndk_revision="$(printf '%s' "${ndk}" | shasum -a 256 | cut -c1-8)"
     fi
 fi
 
-cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/koreader-stockfish"
-tarball="$cache_dir/$sf_tag.tar.gz"
-cached_bin="$cache_dir/stockfish-$sf_tag-$abi-ndk$ndk_revision"
-mkdir -p "$cache_dir" "$(dirname "$dest")"
+cache_dir="${XDG_CACHE_HOME:-${HOME}/.cache}/koreader-stockfish"
+tarball="${cache_dir}/${sf_tag}.tar.gz"
+cached_bin="${cache_dir}/stockfish-${sf_tag}-${abi}-ndk${ndk_revision}"
+mkdir -p "${cache_dir}" "$(dirname "${dest}")"
 
 sha256_of() {
     if command -v sha256sum >/dev/null 2>&1; then
@@ -76,26 +76,26 @@ sha256_of() {
 }
 
 # Fast path: reuse a previously built binary for this ABI.
-if [ ! -f "$cached_bin" ]; then
-    if [ ! -f "$tarball" ] || [ "$(sha256_of "$tarball")" != "$sf_sha256" ]; then
-        echo "Fetching $sf_url..."
+if [ ! -f "${cached_bin}" ]; then
+    if [ ! -f "${tarball}" ] || [ "$(sha256_of "${tarball}")" != "${sf_sha256}" ]; then
+        echo "Fetching ${sf_url}..."
         tmp_dl="$(mktemp)"
         trap 'rm -f "$tmp_dl"' EXIT
-        curl -fsSL -o "$tmp_dl" "$sf_url"
-        got="$(sha256_of "$tmp_dl")"
-        if [ "$got" != "$sf_sha256" ]; then
-            echo "fetch-stockfish.sh: sha256 invalide (attendu $sf_sha256, obtenu $got)" >&2
+        curl -fsSL -o "${tmp_dl}" "${sf_url}"
+        got="$(sha256_of "${tmp_dl}")"
+        if [ "${got}" != "${sf_sha256}" ]; then
+            echo "fetch-stockfish.sh: sha256 invalide (attendu ${sf_sha256}, obtenu ${got})" >&2
             exit 1
         fi
-        mv "$tmp_dl" "$tarball"
+        mv "${tmp_dl}" "${tarball}"
         trap - EXIT
     fi
 
     build_dir="$(mktemp -d)"
     trap 'rm -rf "$build_dir"' EXIT
-    tar xzf "$tarball" -C "$build_dir"
-    src="$build_dir/$sf_dir/src"
-    [ -f "$src/Makefile" ] || { echo "fetch-stockfish.sh: Makefile introuvable" >&2; exit 1; }
+    tar xzf "${tarball}" -C "${build_dir}"
+    src="${build_dir}/${sf_dir}/src"
+    [ -f "${src}/Makefile" ] || { echo "fetch-stockfish.sh: Makefile introuvable" >&2; exit 1; }
 
     # OS=Android skips -lpthread and adds -fPIE/-pie (PIE required since API 21);
     # KERNEL=OpenBSD skips the -latomic that the clang branch adds (absent from
@@ -103,12 +103,12 @@ if [ ! -f "$cached_bin" ]; then
     # -static-libstdc++ links libc++ statically so the binary only needs
     # libc/libm/libdl, present on every device (strict static non-PIE is
     # rejected by recent Android and -static-pie fails on pthread_atfork).
-    make -C "$src" build ARCH="$sf_arch" COMP=clang CXX="$cxx" \
+    make -C "${src}" build ARCH="${sf_arch}" COMP=clang CXX="${cxx}" \
         OS=Android KERNEL=OpenBSD EXTRALDFLAGS="-static-libstdc++"
 
-    "$ndk_bin/llvm-strip" "$src/stockfish"
-    cp "$src/stockfish" "$cached_bin"
-    chmod 755 "$cached_bin"
+    "${ndk_bin}/llvm-strip" "${src}/stockfish"
+    cp "${src}/stockfish" "${cached_bin}"
+    chmod 755 "${cached_bin}"
 fi
 
-cp -v "$cached_bin" "$dest"
+cp -v "${cached_bin}" "${dest}"
