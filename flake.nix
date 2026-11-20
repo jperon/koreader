@@ -125,7 +125,10 @@
         # LC_MESSAGES alone keeps the user's collation and encoding intact.
         commonEnv = ''
           export LC_MESSAGES=C
-          export LD_LIBRARY_PATH=${pkgs.sdl3}/lib:$LD_LIBRARY_PATH
+          # ``nix run`` goes through writeShellApplication, which sets -u:
+          # LD_LIBRARY_PATH is unset there, so it must not be expanded bare.
+          # The +: form also avoids a trailing ':' (= current directory).
+          export LD_LIBRARY_PATH="${pkgs.sdl3}/lib''${LD_LIBRARY_PATH:+:''${LD_LIBRARY_PATH}}"
         '';
 
         # KOReader bundles its own FreeType and HarfBuzz and dlopen()s them from
