@@ -1,1 +1,0 @@
-../../custom_plugins/corpusthomisticum.koplugin/spec/unit/epub_spec.lua
