@@ -25,7 +25,10 @@ case "${abi}" in
         ;;
 esac
 
-[ -n "${dest}" ] || { echo "fetch-stockfish.sh: destination manquante" >&2; exit 1; }
+[ -n "${dest}" ] || {
+    echo "fetch-stockfish.sh: destination manquante" >&2
+    exit 1
+}
 
 sf_tag="sf_11"
 sf_url="https://github.com/official-stockfish/Stockfish/archive/refs/tags/sf_11.tar.gz"
@@ -44,7 +47,10 @@ case "$(uname -s)" in
 esac
 ndk_bin="${ndk}/toolchains/llvm/prebuilt/${host}/bin"
 cxx="${ndk_bin}/${clang_prefix}"
-[ -x "${cxx}" ] || { echo "fetch-stockfish.sh: ${cxx} introuvable" >&2; exit 1; }
+[ -x "${cxx}" ] || {
+    echo "fetch-stockfish.sh: ${cxx} introuvable" >&2
+    exit 1
+}
 
 # Identity of the NDK, so a binary built with one NDK is never silently reused
 # by a build using another (a binary built with NDK 26 has been observed being
@@ -95,7 +101,10 @@ if [ ! -f "${cached_bin}" ]; then
     trap 'rm -rf "$build_dir"' EXIT
     tar xzf "${tarball}" -C "${build_dir}"
     src="${build_dir}/${sf_dir}/src"
-    [ -f "${src}/Makefile" ] || { echo "fetch-stockfish.sh: Makefile introuvable" >&2; exit 1; }
+    [ -f "${src}/Makefile" ] || {
+        echo "fetch-stockfish.sh: Makefile introuvable" >&2
+        exit 1
+    }
 
     # OS=Android skips -lpthread and adds -fPIE/-pie (PIE required since API 21);
     # KERNEL=OpenBSD skips the -latomic that the clang branch adds (absent from
